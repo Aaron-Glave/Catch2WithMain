@@ -55,7 +55,7 @@ TEST_CASE("test 1", "[failing]") {
         }
         for (int i = 0; i < strlen(globalargv[1]); i++) {
             if (globalargv[1][i] < '0' || globalargv[1][i] > '9') {
-                printf("Error: Character %d of your input is %c instead of a number.\nI suggest trying 4.\n", i + 1, globalargv[1][i]);
+                printf("Error: Character %d of your input is %c instead of a number.\nI suggest trying 3.\n", i + 1, globalargv[1][i]);
                 FAIL();
             }
         }
@@ -70,7 +70,7 @@ TEST_CASE("test 1", "[failing]") {
         
     }
     if (guessed_num != 4) {
-        FAIL("Incorrect number passed. Try again!\n");
+        FAIL("Incorrect argument. Try again!\n");
     }
     if (globalargc > 1 && notme) {
         printf("Good job guessing the number.\n");
