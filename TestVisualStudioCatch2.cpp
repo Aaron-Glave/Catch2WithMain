@@ -2,6 +2,7 @@
 //
 
 #include <iostream>
+#include <string>
 
 #include "catch_amalgamated.hpp"
 #define CATCH_CONFIG_MAIN
@@ -17,33 +18,65 @@ TEST_CASE("test 2", "[succeding]") {
     CHECK(2 + 2 == 4); // Example of another check
     // If you want to test exceptions, you can use REQUIRE_THROWS or similar macros
     REQUIRE_THROWS(function_that_throws());
-    printf("Test 2 passed successfully.\nThe function function_that_throws() threw an error.\n");
+    printf("The function function_that_throws() threw an error.\n");
 }
 
 int globalargc = 0;
-char** globalargv = nullptr;
+const char** globalargv = nullptr;
+const char* myname = nullptr;
 
 TEST_CASE("test 1", "[failing]") {
     std::cout << "I will run a test that may or may not fail.\n";
-    if (globalargc <= 1) {
-        std::cout << "No command-line argument provided.\n";
-        FAIL();
-    }
-    else {
-        int lentgh = strlen(globalargv[1]);
-        for (int i = 0; i < lentgh; i++) {
-            if (globalargv[1][i] < '0' || globalargv[1][i] > '9') {
-                printf("Error: Character %d of argument 1 is %c instead of a number.\nI suggest trying 3.\n", i + 1, globalargv[1][i]);
+    size_t length = 0;
+    bool notme = true;
+    int guessed_num = -78;
+    if (strcmp(myname, "Aaron") == 0) {
+        printf("Hello, Aaron!\n");
+        printf("You can type 4 to run a test that succeeds.\n");
+        size_t num_i_expect2 = 0;
+        std::string realrg = std::string();
+        std::getline(std::cin, realrg);
+        const char* num_i_expect2_str = realrg.c_str();
+        for (int i = 0; i < strlen(num_i_expect2_str); i++) {
+            if (num_i_expect2_str[i] < '0' || num_i_expect2_str[i] > '9') {
+                printf("Error: Character %d of your input is %c instead of a number.\nI suggest trying 4.\n", i + 1, num_i_expect2_str[i]);
                 FAIL();
             }
         }
-        printf("Try 3 as a command-line arg to this command.\n");
+        //Set input to atoi
+        guessed_num = atoi(num_i_expect2_str);
+        notme = false;
+    }
+        
+    else if (notme) {
+        if (globalargc <= 1) {
+            printf("Try running me with an argument.");
+            FAIL();
+        }
+        for (int i = 0; i < strlen(globalargv[1]); i++) {
+            if (globalargv[1][i] < '0' || globalargv[1][i] > '9') {
+                printf("Error: Character %d of your input is %c instead of a number.\nI suggest trying 4.\n", i + 1, globalargv[1][i]);
+                FAIL();
+            }
+        }
+        guessed_num = atoi(globalargv[1]);
+        if (guessed_num != 4 and guessed_num != 3) {
+            printf("Try 3 as a command-line arg to this command.\n");
+        }
+        
         if (atoi(globalargv[1]) == 3) {
             printf("Fooled you! :=>)");
         }
-        if (atoi(globalargv[1]) != 4) {
-            FAIL();
-        }
+        
+    }
+    if (guessed_num != 4) {
+        FAIL("Incorrect number passed. Try again!\n");
+    }
+    if (globalargc > 1 && notme) {
+        printf("Good job guessing the number.\n");
+    }
+    else {
+        printf("Good job entering the right name and the right number.\n");
     }
 }
 
@@ -52,12 +85,19 @@ int main(int argc, char *argv[])
 {
     Catch::Session session; // There must be exactly one instance of Catch::Session
     std::cout << "Hello World!\n";
-    char* testargv[2] = { argv[0], nullptr}; // Initialize testargv with the first argument
+    const char* testargv[3] = { argv[0], nullptr, nullptr}; // Initialize testargv with the first argument
     char** realargspassed = argv;
     const char* hi = "hi.";
     //Credit: https://github.com/catchorg/Catch2/blob/devel/docs/own-main.md#top
     globalargc = argc;
-    globalargv = realargspassed;
+    globalargv = testargv;
+    printf("What's your name?\n");
+    std::string user;
+    std::getline(std::cin, user);
+    myname = user.c_str();
+    if (globalargc > 1) {
+        testargv[1] = argv[1];
+    }
     printf("Running a test with %d args...\n", argc);
     int numfailed = session.run(1, testargv);
     printf("Really. I failed %s tests.\n", numfailed == 0 ? "no" : "some");
