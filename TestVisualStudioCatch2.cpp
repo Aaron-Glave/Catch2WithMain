@@ -50,7 +50,7 @@ TEST_CASE("test 1", "[failing]") {
         
     else if (notme) {
         if (globalargc <= 1) {
-            printf("Try running me with an argument.");
+            printf("Try running this command with an argument.");
             FAIL();
         }
         for (int i = 0; i < strlen(globalargv[1]); i++) {
